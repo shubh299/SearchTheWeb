@@ -16,7 +16,9 @@
         app:showAsAction="always" />
 
     <item
+        app:showAsAction="always"
         android:id="@+id/search_page"
-        android:title="Go To Search Page" />
+        android:icon="@drawable/ic_search_page"
+        android:title="Search Page" />
 
 </menu>
