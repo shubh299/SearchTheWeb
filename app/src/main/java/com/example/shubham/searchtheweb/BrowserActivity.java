@@ -63,7 +63,10 @@ public class BrowserActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-                    webView.loadUrl("https://" + url.getText().toString());
+                    if(url.getText().toString().substring(0,3).equals("ftp")||url.getText().toString().substring(0,3).equals("htt"))
+                        webView.loadUrl(url.getText().toString());
+                    else
+                        webView.loadUrl("https://" + url.getText().toString());
                     //url.setText("");
                 }
             });
