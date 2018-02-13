@@ -1,27 +1,23 @@
 package com.example.shubham.searchtheweb;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.webkit.CookieManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Button;
-import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 public class BrowserActivity extends AppCompatActivity {
     WebView webView;
     ProgressBar load;
-    EditText url;
-    Button goButton;
+    TextView urlText;
+    ImageButton closeButton;
+    TextView titleText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,12 +25,13 @@ public class BrowserActivity extends AppCompatActivity {
         setContentView(R.layout.activity_browser);
         webView = (WebView) findViewById(R.id.webView);
         load = (ProgressBar) findViewById(R.id.load_bar);
-        url = (EditText) findViewById(R.id.url);
-        goButton = (Button) findViewById(R.id.go_button);
+        urlText = (TextView) findViewById(R.id.url);
+        closeButton = (ImageButton) findViewById(R.id.go_button);
+        titleText = (TextView) findViewById(R.id.title);
         load.setVisibility(View.GONE);
         load.setMax(100);
-        url.setText(getIntent().getExtras().getString("url_query"));
-        webView.loadUrl(url.getText().toString());
+        urlText.setText(getIntent().getExtras().getString("url_query"));
+        webView.loadUrl(urlText.getText().toString());
 
         if (savedInstanceState != null)
             webView.restoreState(savedInstanceState);
@@ -46,7 +43,6 @@ public class BrowserActivity extends AppCompatActivity {
             webView.getSettings().setUseWideViewPort(true);
             webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
             webView.setBackgroundColor(Color.WHITE);
-
             webView.setWebViewClient(new OurViewClient());
             webView.setWebChromeClient(new WebChromeClient() {
                 @Override
@@ -58,13 +54,10 @@ public class BrowserActivity extends AppCompatActivity {
                         load.setVisibility(View.GONE);
                 }
             });
-            goButton.setOnClickListener(new View.OnClickListener() {
+            closeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-                    webView.loadUrl("https://" + url.getText().toString());
-                    //url.setText("");
+                    finish();
                 }
             });
         }
@@ -76,13 +69,19 @@ public class BrowserActivity extends AppCompatActivity {
             view.loadUrl(url_local);
             CookieManager.getInstance().setAcceptCookie(true);
             String currentURL = view.getUrl();
-            url.setText(currentURL);
+            String pageTitle=view.getTitle();
+            titleText.setText(pageTitle);
+            urlText.setText(currentURL);
             return true;
         }
 
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
+            String currentURL = view.getUrl();
+            String pageTitle=view.getTitle();
+            titleText.setText(pageTitle);
+            urlText.setText(currentURL);
         }
     }
 
@@ -93,43 +92,14 @@ public class BrowserActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.back:
-                if (webView.canGoBack())
-                    webView.goBack();
-                return true;
-
-            case R.id.forward:
-                if (webView.canGoForward())
-                    webView.goForward();
-                return true;
-
-            case R.id.search_page:
-                finish();
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
     public void onBackPressed() {
         if (webView.canGoBack())
             webView.goBack();
         else {
-            if (load.getProgress()<100)
+            if (load.getProgress()<100 || load.getProgress()>0)
                 webView.stopLoading();
             else
-                super.onBackPressed();
+                closeButton.callOnClick();
         }
     }
 }

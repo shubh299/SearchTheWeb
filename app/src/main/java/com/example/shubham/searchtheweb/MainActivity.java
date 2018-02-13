@@ -15,7 +15,6 @@ public class MainActivity extends AppCompatActivity {
     Button google;
     Button yahoo;
     Button ddg;
-    Button quora;
     Button searchButton;
     Button stackoverflow;
     Intent callBrowser;
@@ -28,7 +27,6 @@ public class MainActivity extends AppCompatActivity {
         google= (Button) findViewById(R.id.google_search_button);
         yahoo= (Button) findViewById(R.id.yahoo_search_button);
         ddg= (Button) findViewById(R.id.ddg_search_button);
-        quora= (Button) findViewById(R.id.quora_search_button);
         stackoverflow= (Button) findViewById(R.id.stackoverflow_search_button);
         errorMessage= (TextView) findViewById(R.id.search_error_text);
         callBrowser = new Intent(MainActivity.this, BrowserActivity.class);
@@ -39,13 +37,18 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 searchString = searchBox.getText().toString();
                 //errorMessage.setText(searchString);
-                if(searchString.isEmpty())
+                if(searchString.isEmpty()) {
                     errorMessage.setVisibility(View.VISIBLE);
+                    google.setVisibility(View.INVISIBLE);
+                    yahoo.setVisibility(View.INVISIBLE);
+                    ddg.setVisibility(View.INVISIBLE);
+                    stackoverflow.setVisibility(View.INVISIBLE);
+                }
                 else{
+                    errorMessage.setVisibility(View.INVISIBLE);
                     google.setVisibility(View.VISIBLE);
                     yahoo.setVisibility(View.VISIBLE);
                     ddg.setVisibility(View.VISIBLE);
-                    quora.setVisibility(View.VISIBLE);
                     stackoverflow.setVisibility(View.VISIBLE);
                 }
             }
@@ -73,15 +76,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String search = searchString.replace(' ','+');
                 String query = "https://duckduckgo.com/?q="+search+"&t=hz&ia=web";
-                callBrowser.putExtra("url_query",query);
-                startActivity(callBrowser);
-            }
-        });
-        quora.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                String search = searchString.replace(' ','+');
-                String query = "https://www.quora.com/search?q="+search;
                 callBrowser.putExtra("url_query",query);
                 startActivity(callBrowser);
             }
