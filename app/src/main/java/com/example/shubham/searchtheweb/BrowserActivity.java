@@ -11,6 +11,9 @@ import android.webkit.WebViewClient;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.widget.Toast;
 
 public class BrowserActivity extends AppCompatActivity {
     WebView webView;
@@ -58,6 +61,21 @@ public class BrowserActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     finish();
+                }
+            });
+            
+            //Copy URL
+            urlText.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                    ClipData clip = ClipData.newPlainText("text", urlText.getText().toString());
+                    clipboard.setPrimaryClip(clip);
+                    if(clipboard.hasPrimaryClip())
+                        Toast.makeText(getApplicationContext(),"URL Copied : "+urlText.getText().toString(),Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(getApplicationContext(),"Could not copy URL",Toast.LENGTH_SHORT).show();;
+                    return false;
                 }
             });
         }
