@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
                     stackoverflow.setVisibility(View.INVISIBLE);
                 }
                 else{
-                    errorMessage.setVisibility(View.INVISIBLE);
+                    errorMessage.setVisibility(View.GONE);
                     google.setVisibility(View.VISIBLE);
                     yahoo.setVisibility(View.VISIBLE);
                     ddg.setVisibility(View.VISIBLE);
